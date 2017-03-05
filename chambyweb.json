@@ -1,8 +1,7 @@
 {
   "variables": {
-    "aws_access_key": "",
-    "aws_secret_key": "",
-    "do_api_token": ""
+    "aws_access_key": "{{env `packer_access_key`}}",
+    "aws_secret_key": "{{env `packer_secret_key`}}"
   },
   "builders": [{
     "type": "amazon-ebs",
@@ -12,20 +11,24 @@
     "source_ami": "ami-0b33d91d",
     "instance_type": "t2.micro",
     "ssh_username": "ec2-user",
-    "ami_name": "chambyweb {{timestamp}}"
+    "ami_name": "chambyWordPress {{timestamp}}"
   }],
   "provisioners": [{
+    "type": "file",
+    "source": "scripts/mysql_secure_installation.sql",
+    "destination": "/var/tmp/mysql_secure_installation.sql"
+  },
+  {
+    "type": "file",
+    "source": "scripts/wordpress_database.sql",
+    "destination": "/var/tmp/wordpress_database.sql"
+  },
+  {
     "type": "shell",
-    "inline": [
-      "sleep 30",
-      "sudo yum install -y httpd",
-      "sudo bash -c \"echo '<h1>Welcome to chamby.io!</h1><br>' > /var/www/html/index.html \"",
-      "sudo bash -c \"echo '<h1>You are connected to: ' >> /var/www/html/index.html\"",
-      "sudo bash -c \"echo $HOSTNAME >> /var/www/html/index.html\"",
-      "sudo bash -c \"echo '</h1>' >> /var/www/html/index.html\"",
-      "sudo chkconfig httpd on",
-      "sudo shutdown -r now"
+    "scripts": [
+      "scripts/base_setup.sh",
+      "scripts/apache_setup.sh",
+      "scripts/mysql_setup.sh"
     ]
   }]
-
 }
