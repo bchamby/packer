@@ -24,6 +24,11 @@
     "destination": "/var/tmp/wordpress_database.sql"
   },
   {
+    "type": "file",
+    "source": "files/wp-config.php",
+    "destination": "/var/tmp/wp-config.php"
+  },
+  {
     "type": "shell",
     "scripts": [
       "scripts/base_setup.sh",
@@ -31,10 +36,5 @@
       "scripts/mysql_setup.sh",
       "scripts/wordpress_setup.sh"
     ]
-  },
-  {
-    "type": "file",
-    "source": "files/wp-config.php",
-    "destination": "/var/www/html/blog/wp-config.php"
   }]
 }
