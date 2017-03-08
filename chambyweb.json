@@ -1,7 +1,8 @@
 {
   "variables": {
     "aws_access_key": "{{env `packer_access_key`}}",
-    "aws_secret_key": "{{env `packer_secret_key`}}"
+    "aws_secret_key": "{{env `packer_secret_key`}}",
+    "mysql_password": "{{user `mysql_password`}}"
   },
   "builders": [{
     "type": "amazon-ebs",
@@ -36,5 +37,9 @@
       "scripts/mysql_setup.sh",
       "scripts/wordpress_setup.sh"
     ]
+  },
+  {
+    "type": "shell",
+    "inline": ["sudo mysql -u root -e \"UPDATE mysql.user SET Password=PASSWORD('{{user `mysql_password`}}') WHERE User='root'\""]
   }]
 }
